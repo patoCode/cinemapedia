@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:cinemapedia/config/router/app_router.dart';
 import 'package:cinemapedia/config/theme/app_theme.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  // !! OJO Es muy importante dejar el .env en la raiz del proyecto, y no en la carpeta assets, aunque en el pubspec.yml asi lo  indique
+  await dotenv.load(
+    fileName: ".env",
+  );
   runApp(const MainApp());
 }
 
