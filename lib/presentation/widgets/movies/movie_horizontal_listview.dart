@@ -88,69 +88,71 @@ class _Slide extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // !! No lo define Fernando, pero sin esto no da el height
-          // ** Image
-          Expanded(
-            child: SizedBox(
-              width: 150,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  movie.backdropPath,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                  width: 150,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress != null) {
-                      return const Center(
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      );
-                    }
-                    return FadeIn(child: child);
-                  },
+    return FadeInRight(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // !! No lo define Fernando, pero sin esto no da el height
+            // ** Image
+            Expanded(
+              child: SizedBox(
+                width: 150,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    movie.backdropPath,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    width: 150,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress != null) {
+                        return const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        );
+                      }
+                      return FadeIn(child: child);
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
 
-          const SizedBox(height: 5),
-          // ** Title
-          SizedBox(
-            width: 150,
-            child: Text(
-              movie.title,
-              maxLines: 2,
-              style: textTheme.bodySmall,
+            const SizedBox(height: 5),
+            // ** Title
+            SizedBox(
+              width: 150,
+              child: Text(
+                movie.title,
+                maxLines: 2,
+                style: textTheme.bodySmall,
+              ),
             ),
-          ),
-          SizedBox(
-            width: 150,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.star_half_outlined,
-                  color: Colors.yellow.shade800,
-                ),
-                const SizedBox(width: 3),
-                Text(
-                  '${movie.voteAverage}',
-                  style: textTheme.bodyMedium!
-                      .copyWith(color: Colors.yellow.shade800),
-                ),
-                const Spacer(),
-                Text(
-                  HumanFormats.number(movie.popularity),
-                  style: textTheme.bodySmall,
-                ),
-              ],
-            ),
-          )
-        ],
+            SizedBox(
+              width: 150,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.star_half_outlined,
+                    color: Colors.yellow.shade800,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    '${movie.voteAverage}',
+                    style: textTheme.bodyMedium!
+                        .copyWith(color: Colors.yellow.shade800),
+                  ),
+                  const Spacer(),
+                  Text(
+                    HumanFormats.number(movie.popularity),
+                    style: textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -169,8 +171,8 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge;
     return Container(
-      padding: const EdgeInsets.only(top: 15),
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: [
           if (title != null)
