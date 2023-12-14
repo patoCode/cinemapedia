@@ -45,6 +45,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final popularMovies = ref.watch(popularMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
     final topRateMovies = ref.watch(topRatedMoviesProvider);
+
+    return const FullscreenLoader();
+
     // ** <CustomScrollView> Permite integrar mas elementos que dependen del scroll, no tiene childs, tiene <slivers>
     return CustomScrollView(
       slivers: [
@@ -98,15 +101,5 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         )
       ],
     );
-
-    // return const Placeholder(
-    //   strokeWidth: .5,
-    //   color: Colors.white,
-    //   child: Icon(
-    //     Icons.tv_off_rounded,
-    //     size: 50,
-    //     color: Colors.white,
-    //   ),
-    // );
   }
 }
