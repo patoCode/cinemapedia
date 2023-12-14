@@ -39,37 +39,52 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   Widget build(BuildContext context) {
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final slideShowMovies = ref.watch(moviesSlideshowProvider);
-    // ** <SingleChildScrollView> Permite generar el scroll para evitar el desborde de elementos de una COLUMNA
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const CustomAppBar(),
-          MoviesSlideShow(movies: slideShowMovies),
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'En cines',
-            subtitle: "lunes 20",
-            loadNextPage: () =>
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+    // ** <CustomScrollView> Permite integrar mas elementos que dependen del scroll, no tiene childs, tiene <slivers>
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: CustomAppBar(),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Column(
+                children: [
+                  MoviesSlideShow(movies: slideShowMovies),
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'En cines',
+                    subtitle: "lunes 20",
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'Proximamente',
+                    subtitle: "Este mes",
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'Populares',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  )
+                ],
+              );
+            },
+            childCount: 1,
           ),
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'Proximamente',
-            subtitle: "Este mes",
-            loadNextPage: () =>
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
-          ),
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'Populares',
-            loadNextPage: () =>
-                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
-          ),
-          const SizedBox(
-            height: 50,
-          )
-        ],
-      ),
+        )
+      ],
     );
 
     // return const Placeholder(
