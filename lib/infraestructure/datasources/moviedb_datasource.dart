@@ -18,7 +18,8 @@ class MovieDbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    final response = await dio.get('/movie/now_playing');
+    final response =
+        await dio.get('/movie/now_playing', queryParameters: {'page': page});
     final movieDbResponse = MovieDbResponse.fromJson(response.data);
 
     // ** Filtros en MAPS, esto unicamente evita agregar movies que no tengan poster

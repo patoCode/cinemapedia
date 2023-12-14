@@ -3,7 +3,8 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MovieHorizontalListview extends StatelessWidget {
+// ** cambiamos a un <StatefulWidget> porque es necesario agregar un listener al ListView<HorizontalSlideshow>, para saber cuando se cargaran mas peliculas(es decir llegamos al final)
+class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subtitle;
@@ -19,24 +20,55 @@ class MovieHorizontalListview extends StatelessWidget {
   });
 
   @override
+  State<MovieHorizontalListview> createState() =>
+      _MovieHorizontalListviewState();
+}
+
+class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // ** Agregamos los listener, cada vez que agregamos el listener inmediatamente agregamos el dispose() de ese listener.
+    scrollController.addListener(() {
+      if (widget.loadNextPage == null) return;
+      if (scrollController.position.pixels + 200 >=
+          scrollController.position.maxScrollExtent) {
+        // ** para asegurar que no sera null la funcion
+        widget.loadNextPage!();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 350,
       child: Column(
         children: [
-          if (title != null || subtitle != null)
+          if (widget.title != null || widget.subtitle != null)
             _Title(
-              title: title,
-              subtitle: subtitle,
+              title: widget.title,
+              subtitle: widget.subtitle,
             ),
           // ** <Expanded> permite que el widget contenido(el que esta dentro) ocupe todo el espacio dsponible
           Expanded(
             child: ListView.builder(
+              // ** agregamos un controller
+              controller: scrollController,
               // ** Direccion del ListView
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              itemCount: movies.length,
-              itemBuilder: (context, index) => _Slide(movie: movies[index]),
+              itemCount: widget.movies.length,
+              itemBuilder: (context, index) =>
+                  _Slide(movie: widget.movies[index]),
             ),
           )
         ],
