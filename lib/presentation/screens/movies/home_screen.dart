@@ -1,5 +1,7 @@
 import 'package:cinemapedia/config/constants/environment.dart';
+import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
   static const name = 'home_screen';
@@ -9,9 +11,62 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(Environment.theMovieDbKey),
-      ),
+      body: const _HomeView(),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(
+            Icons.plagiarism,
+          )),
     );
+  }
+}
+
+// ** Un StatefulWidget se convierte en un <ConsumerStatefulWidget> de Riverpod, esto siempre sera asi
+class _HomeView extends ConsumerStatefulWidget {
+  const _HomeView();
+
+  @override
+  // ** Y esto ya no es un State, sino por el <ConsumerStatefulWidget> este se convertira en un <ConsumerState>
+  // !! se cambia despues del metodo <class _HomeViewState extends ConsumerState<_HomeView> >
+  ConsumerState<_HomeView> createState() => _HomeViewState();
+}
+
+// ** Y esto ya no es un State, sino por el <ConsumerStatefulWidget> este se convertira en un <ConsumerState>
+class _HomeViewState extends ConsumerState<_HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: nowPlayingMovies.length,
+            itemBuilder: (context, index) {
+              final movie = nowPlayingMovies[index];
+              return ListTile(
+                title: Text(movie.title),
+              );
+            },
+          ),
+        )
+      ],
+    );
+
+    // return const Placeholder(
+    //   strokeWidth: .5,
+    //   color: Colors.white,
+    //   child: Icon(
+    //     Icons.tv_off_rounded,
+    //     size: 50,
+    //     color: Colors.white,
+    //   ),
+    // );
   }
 }
