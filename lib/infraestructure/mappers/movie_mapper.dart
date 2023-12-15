@@ -16,8 +16,9 @@ class MovieMaper {
         popularity: movieDb.popularity,
         posterPath: movieDb.posterPath != ''
             ? 'https://image.tmdb.org/t/p/original${movieDb.posterPath}'
-            : 'no-poster',
-        releaseDate: movieDb.releaseDate,
+            : 'https://i0.wp.com/moviemarker.co.uk/wp-content/uploads/NoPosterAvailable.jpg',
+        releaseDate:
+            movieDb.releaseDate != null ? movieDb.releaseDate! : DateTime.now(),
         title: movieDb.title,
         video: movieDb.video,
         voteAverage: movieDb.voteAverage,
