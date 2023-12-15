@@ -105,7 +105,7 @@ class _Slide extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => context.push('/movie/${movie.id}'),
                     child: Image.network(
-                      movie.backdropPath,
+                      movie.posterPath,
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                       width: 150,

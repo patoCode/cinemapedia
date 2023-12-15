@@ -6,7 +6,7 @@ class MovieMaper {
   static Movie movieDbToEntity(MovieMovieDB movieDb) => Movie(
         adult: movieDb.adult,
         backdropPath: movieDb.backdropPath != ''
-            ? 'https://image.tmdb.org/t/p/w500/${movieDb.backdropPath}'
+            ? 'https://image.tmdb.org/t/p/original${movieDb.backdropPath}'
             : 'https://images.wondershare.com/repairit/aticle/2021/07/resolve-images-not-showing-problem-1.jpg',
         genreIds: movieDb.genreIds.map((e) => e.toString()).toList(),
         id: movieDb.id,
@@ -15,7 +15,7 @@ class MovieMaper {
         overview: movieDb.overview,
         popularity: movieDb.popularity,
         posterPath: movieDb.posterPath != ''
-            ? 'https://image.tmdb.org/t/p/w500/${movieDb.posterPath}'
+            ? 'https://image.tmdb.org/t/p/original${movieDb.posterPath}'
             : 'no-poster',
         releaseDate: movieDb.releaseDate,
         title: movieDb.title,
@@ -27,7 +27,7 @@ class MovieMaper {
   static Movie movieDetailsToEntity(MovieDetails movieDb) => Movie(
         adult: movieDb.adult,
         backdropPath: movieDb.backdropPath != ''
-            ? 'https://image.tmdb.org/t/p/w500/${movieDb.backdropPath}'
+            ? 'https://image.tmdb.org/t/p/original${movieDb.backdropPath}'
             : 'https://images.wondershare.com/repairit/aticle/2021/07/resolve-images-not-showing-problem-1.jpg',
         genreIds: movieDb.genres.map((e) => e.name).toList(),
         id: movieDb.id,
@@ -36,7 +36,7 @@ class MovieMaper {
         overview: movieDb.overview,
         popularity: movieDb.popularity,
         posterPath: movieDb.posterPath != ''
-            ? 'https://image.tmdb.org/t/p/w500/${movieDb.posterPath}'
+            ? 'https://image.tmdb.org/t/p/original${movieDb.posterPath}'
             : 'no-poster',
         releaseDate: movieDb.releaseDate,
         title: movieDb.title,
