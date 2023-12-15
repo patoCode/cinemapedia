@@ -1,7 +1,7 @@
 class MovieDetails {
   final bool adult;
   final String backdropPath;
-  final dynamic belongsToCollection;
+  final dynamic? belongsToCollection;
   final int budget;
   final List<Genre> genres;
   final String homepage;
@@ -28,7 +28,7 @@ class MovieDetails {
   MovieDetails({
     required this.adult,
     required this.backdropPath,
-    required this.belongsToCollection,
+    this.belongsToCollection,
     required this.budget,
     required this.genres,
     required this.homepage,
@@ -155,7 +155,7 @@ class ProductionCompany {
   factory ProductionCompany.fromJson(Map<String, dynamic> json) =>
       ProductionCompany(
         id: json["id"],
-        logoPath: json["logo_path"],
+        logoPath: (json["logo_path"] == null) ? 'no-logo' : json["logo_path"],
         name: json["name"],
         originCountry: json["origin_country"],
       );
