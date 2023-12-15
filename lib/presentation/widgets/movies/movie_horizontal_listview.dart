@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 // ** cambiamos a un <StatefulWidget> porque es necesario agregar un listener al ListView<HorizontalSlideshow>, para saber cuando se cargaran mas peliculas(es decir llegamos al final)
 class MovieHorizontalListview extends StatefulWidget {
@@ -101,19 +102,22 @@ class _Slide extends StatelessWidget {
                 width: 150,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    movie.backdropPath,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                    width: 150,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress != null) {
-                        return const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        );
-                      }
-                      return FadeIn(child: child);
-                    },
+                  child: GestureDetector(
+                    onTap: () => context.push('/movie/${movie.id}'),
+                    child: Image.network(
+                      movie.backdropPath,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      width: 150,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress != null) {
+                          return const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          );
+                        }
+                        return FadeIn(child: child);
+                      },
+                    ),
                   ),
                 ),
               ),
