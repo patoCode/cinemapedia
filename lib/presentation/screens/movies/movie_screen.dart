@@ -41,11 +41,88 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
         slivers: [
-          _CustomSliverAppBar(
-            movie: movie,
-          ),
+          _CustomSliverAppBar(movie: movie),
+          // ** <SliverList> Para darle la funcionalidad requerido para darle el efecto de encoger un poco el AppBar de arriba, de lo contrario podriamos hacer en un container y blah blah blah....
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => _MovieDetails(movie: movie),
+              childCount: 1,
+            ),
+          )
         ],
       ),
+    );
+  }
+}
+
+class _MovieDetails extends StatelessWidget {
+  final Movie movie;
+
+  const _MovieDetails({
+    super.key,
+    required this.movie,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  movie.posterPath,
+                  width: size.width * .3,
+                ),
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: (size.width - 40) * .7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Placeholder(),
+                    Text(
+                      movie.title,
+                      style: textTheme.titleLarge,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Text(movie.overview),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: Wrap(
+            children: [
+              ...movie.genreIds.map(
+                (gender) => Container(
+                  margin: EdgeInsets.only(right: 10),
+                  child: Chip(
+                    label: Text(gender),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        const SizedBox(height: 100),
+      ],
     );
   }
 }
@@ -72,13 +149,13 @@ class _CustomSliverAppBar extends StatelessWidget {
           horizontal: 10,
           vertical: 10,
         ),
-        title: Text(
-          movie.title,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-          textAlign: TextAlign.start,
-        ),
+        // title: Text(
+        //   movie.title,
+        //   style: const TextStyle(
+        //     fontSize: 20,
+        //   ),
+        //   textAlign: TextAlign.start,
+        // ),
         background: Stack(
           children: [
             SizedBox.expand(
