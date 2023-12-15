@@ -1,5 +1,6 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +22,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   @override
   void initState() {
     super.initState();
+
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
+    ref.read(actorByMovieProvider.notifier).loadActors(widget.movieId);
   }
 
   @override
@@ -43,6 +46,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
         slivers: [
           _CustomSliverAppBar(movie: movie),
           // ** <SliverList> Para darle la funcionalidad requerido para darle el efecto de encoger un poco el AppBar de arriba, de lo contrario podriamos hacer en un container y blah blah blah....
+
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => _MovieDetails(movie: movie),
@@ -95,7 +99,7 @@ class _MovieDetails extends StatelessWidget {
                       style: textTheme.titleLarge,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 10),
                       child: Text(movie.overview),
                     ),
                   ],
@@ -105,24 +109,88 @@ class _MovieDetails extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Wrap(
             children: [
               ...movie.genreIds.map(
                 (gender) => Container(
-                  margin: EdgeInsets.only(right: 10),
+                  margin: const EdgeInsets.only(right: 10),
                   child: Chip(
                     label: Text(gender),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 ),
               )
             ],
           ),
         ),
-        const SizedBox(height: 100),
+        // todo Mostrar los actores
+        _ActorByMovie(movieId: movie.id.toString()),
+        const SizedBox(height: 50),
       ],
+    );
+  }
+}
+
+class _ActorByMovie extends ConsumerWidget {
+  final String movieId;
+
+  const _ActorByMovie({
+    super.key,
+    required this.movieId,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final actorByMovie = ref.watch(actorByMovieProvider)[movieId];
+    if (actorByMovie == null)
+      return const CircularProgressIndicator(
+        strokeWidth: 4,
+      );
+
+    final actors = actorByMovie!;
+
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: actors.length,
+        itemBuilder: (context, index) {
+          final actor = actors[index];
+
+          return Container(
+            padding: const EdgeInsets.all(8.0),
+            width: 135,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    actor.profilePath,
+                    height: 180,
+                    width: 135,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Text(
+                  actor.name,
+                  maxLines: 2,
+                ),
+                Text(
+                  actor.character ?? '',
+                  maxLines: 2,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -138,7 +206,6 @@ class _CustomSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    print("IMAGEN ${movie.backdropPath}, ID ${movie.id}");
     // ** Sliver que se comporta como un appbar
     return SliverAppBar(
       backgroundColor: Colors.indigo,

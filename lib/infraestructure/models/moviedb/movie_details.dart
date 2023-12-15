@@ -6,7 +6,7 @@ class MovieDetails {
   final List<Genre> genres;
   final String homepage;
   final int id;
-  final String imdbId;
+  final String? imdbId;
   final String originalLanguage;
   final String originalTitle;
   final String overview;
@@ -33,7 +33,7 @@ class MovieDetails {
     required this.genres,
     required this.homepage,
     required this.id,
-    required this.imdbId,
+    this.imdbId,
     required this.originalLanguage,
     required this.originalTitle,
     required this.overview,
