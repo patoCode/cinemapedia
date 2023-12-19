@@ -1,107 +1,22 @@
-import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
-import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/views/views.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
   static const name = 'home_screen';
+  // * En esta variable enviaremos desde el goRouter que vista(VIEW) queremos cargar
+  final Widget childView;
 
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    required this.childView,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: _HomeView(),
+    return Scaffold(
+      body: childView,
       bottomNavigationBar: CustomButtomNavigation(),
-    );
-  }
-}
-
-// ** Un StatefulWidget se convierte en un <ConsumerStatefulWidget> de Riverpod, esto siempre sera asi
-class _HomeView extends ConsumerStatefulWidget {
-  const _HomeView();
-
-  @override
-  // ** Y esto ya no es un State, sino por el <ConsumerStatefulWidget> este se convertira en un <ConsumerState>
-  // !! se cambia despues del metodo <class _HomeViewState extends ConsumerState<_HomeView> >
-  ConsumerState<_HomeView> createState() => _HomeViewState();
-}
-
-// ** Y esto ya no es un State, sino por el <ConsumerStatefulWidget> este se convertira en un <ConsumerState>
-class _HomeViewState extends ConsumerState<_HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-    ref.read(popularMoviesProvider.notifier).loadNextPage();
-    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
-    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final initialLoading = ref.watch(initialLoadingProvider);
-    if (initialLoading) return const FullscreenLoader();
-
-    final slideShowMovies = ref.watch(moviesSlideshowProvider);
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final popularMovies = ref.watch(popularMoviesProvider);
-    final upcomingMovies = ref.watch(upcomingMoviesProvider);
-    final topRateMovies = ref.watch(topRatedMoviesProvider);
-
-    // ** <CustomScrollView> Permite integrar mas elementos que dependen del scroll, no tiene childs, tiene <slivers>
-    return CustomScrollView(
-      slivers: [
-        const SliverAppBar(
-          floating: true,
-          flexibleSpace: CustomAppBar(),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Column(
-                children: [
-                  MoviesSlideShow(movies: slideShowMovies),
-                  MovieHorizontalListview(
-                    movies: nowPlayingMovies,
-                    title: 'En cines',
-                    subtitle: "lunes 20",
-                    loadNextPage: () => ref
-                        .read(nowPlayingMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
-                  MovieHorizontalListview(
-                    movies: upcomingMovies,
-                    title: 'Proximamente',
-                    subtitle: "Este mes",
-                    loadNextPage: () => ref
-                        .read(upcomingMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
-                  MovieHorizontalListview(
-                    movies: popularMovies,
-                    title: 'Populares',
-                    loadNextPage: () =>
-                        ref.read(popularMoviesProvider.notifier).loadNextPage(),
-                  ),
-                  MovieHorizontalListview(
-                    movies: topRateMovies,
-                    title: 'Top movies',
-                    loadNextPage: () => ref
-                        .read(topRatedMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  )
-                ],
-              );
-            },
-            childCount: 1,
-          ),
-        )
-      ],
     );
   }
 }
