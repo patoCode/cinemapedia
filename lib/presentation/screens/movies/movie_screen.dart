@@ -196,6 +196,14 @@ class _ActorByMovie extends ConsumerWidget {
   }
 }
 
+// * FutureProvider Investigar bien, no me acuerdo :D
+// * el .family permite que este provider pueda recibir un parametro
+final isFavoritteProvider = FutureProvider.family((ref, int movieId) {
+  final localStorageRepository = ref.watch(localStoageRepositoryProvider);
+  return localStorageRepository
+      .isMovieFavorite(movieId); // Si esta en favoritos
+});
+
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
@@ -206,6 +214,8 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoriteFuture = ref.watch(isFavoritteProvider(movie.id));
+
     final size = MediaQuery.of(context).size;
     // ** Sliver que se comporta como un appbar
     return SliverAppBar(
@@ -218,14 +228,25 @@ class _CustomSliverAppBar extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: IconButton(
-            onPressed: () {
-              ref.watch(localStoageRepositoryProvider).toggleFavorite(movie);
-            },
-            icon: const Icon(
-              Icons.star_border,
-              size: 40,
-            ),
-          ),
+              onPressed: () {
+                ref.watch(localStoageRepositoryProvider).toggleFavorite(movie);
+              },
+              icon: isFavoriteFuture.when(
+                data: (isFavorite) => isFavorite
+                    ? const Icon(
+                        Icons.star_rate,
+                        size: 40,
+                        color: Colors.amber,
+                      )
+                    : const Icon(
+                        Icons.star_border,
+                        size: 40,
+                      ),
+                error: (_, __) => throw UnimplementedError(),
+                loading: () => const CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              )),
           //     IconButton(
           //   onPressed: () {},
           //   icon: const Icon(
