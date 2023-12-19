@@ -1,10 +1,10 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/domain/repositories/movies_repository.dart';
 import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
-import 'package:cinemapedia/presentation/providers/movies/movies_repository_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../providers/providers.dart';
 
 class CustomAppBar extends ConsumerWidget {
   const CustomAppBar({super.key});
@@ -36,6 +36,8 @@ class CustomAppBar extends ConsumerWidget {
                 // ! stc15
                 // ** Permite la funcionalidad de buscador, esto es gestionado por Flutter casi de forma automatica.
                 final movieRepository = ref.read(movieRepositoryProvider);
+                final searchQuery = ref.read(serchQueryProvider);
+
                 // !! No se recomienda hacerlo de esta forma, ya que al ser un Future el context pudo haber cambiado
                 // final selectedMovieTap = await showSearch<Movie?>(
                 //   context: context,
@@ -51,9 +53,15 @@ class CustomAppBar extends ConsumerWidget {
                 //   context.push('/movie/${selectedMovieTap.id}');
                 // }
                 showSearch<Movie?>(
+                  query: searchQuery,
                   context: context,
-                  delegate: SearchMovieDelegate(
-                      searchMovies: movieRepository.searchMovie),
+                  delegate: SearchMovieDelegate(searchMovies: (query) {
+                    // * En el video "Mantener un estado con las películas buscadas" y posterior, se optimiza las busquedas y se ontiene los datos desde la memoria, y no desde el query HTTP
+                    ref
+                        .read(serchQueryProvider.notifier)
+                        .update((state) => query);
+                    return movieRepository.searchMovie(query);
+                  }),
                 ).then((movie) {
                   if (movie == null) return;
                   context.push('/movie/${movie.id}');
