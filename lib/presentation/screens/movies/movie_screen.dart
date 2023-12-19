@@ -196,7 +196,7 @@ class _ActorByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({
@@ -205,7 +205,7 @@ class _CustomSliverAppBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
     // ** Sliver que se comporta como un appbar
     return SliverAppBar(
@@ -218,7 +218,9 @@ class _CustomSliverAppBar extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              ref.watch(localStoageRepositoryProvider).toggleFavorite(movie);
+            },
             icon: const Icon(
               Icons.star_border,
               size: 40,
