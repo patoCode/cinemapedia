@@ -230,16 +230,18 @@ class _CustomSliverAppBar extends ConsumerWidget {
           child: IconButton(
               onPressed: () {
                 ref.watch(localStoageRepositoryProvider).toggleFavorite(movie);
+                // * Invalida el estado del provider y regresa este a su valor inicial
+                ref.invalidate(isFavoritteProvider(movie.id));
               },
               icon: isFavoriteFuture.when(
                 data: (isFavorite) => isFavorite
                     ? const Icon(
-                        Icons.star_rate,
+                        Icons.favorite_rounded,
                         size: 40,
-                        color: Colors.amber,
+                        color: Colors.red,
                       )
                     : const Icon(
-                        Icons.star_border,
+                        Icons.favorite_border,
                         size: 40,
                       ),
                 error: (_, __) => throw UnimplementedError(),
